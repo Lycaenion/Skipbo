@@ -1,8 +1,8 @@
 class Player:
     player_discard_piles = [[] * 4]
 
-    def __init__(self, player_number, player_hand, player_deck):
-        self.player_number = player_number
+    def __init__(self, player_id, player_hand, player_deck):
+        self.player_number = player_id
         self.player_hand = player_hand
         self.player_deck = player_deck
 

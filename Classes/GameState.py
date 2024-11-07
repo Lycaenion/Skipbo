@@ -16,3 +16,11 @@ class GameState:
         self.players = players
         self.game_deck = game_deck
         self.build_piles = build_piles
+
+    def get_player(self, player_id):
+
+        num_of_players = self.players.count()
+
+        for i in range(num_of_players):
+            if self.players[i].player_id == player_id:
+                return self.players[i]

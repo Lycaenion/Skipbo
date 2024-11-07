@@ -3,55 +3,67 @@
 """Actions available are: Build, discard and draw. Build is available from both player hand and player discard piles. When player runs out of cards on hand, 5 new ones will be given and the player continues."""
 """The game will first be adapted for 2-3 players. Later players 4-6 will be added."""
 from Classes.Player import Player
-import Card
+from Classes.Card import Card
 import random
-CARD_VALUES = {
-    'ONE' : 1,
-    'TWO' : 2,
-    'THREE' : 3,
-    'FOUR' : 4,
-    'FIVE' : 5,
-    'SIX' : 6,
-    'SEVEN' : 7,
-    'EIGHT' : 8,
-    'NINE' : 9,
-    'TEN' : 10,
-    'ELEVEN' : 11,
-    'TWELVE' : 12
-}
+from Classes.GameState import GameState
+
+CARD_VALUES = [
+    '01',
+    '02',
+    '03',
+    '04',
+    '05',
+    '06',
+    '07',
+    '08',
+    '09',
+    '10',
+    '11',
+    '12'
+]
 
 PLAYER_DECK_SIZE = 30
 PLAYER_HAND_SIZE = 5
 
-game_deck = []
-players = []
 
+players = []
+game_state = None
+game_deck = []
 number_of_players = 2
+player_turn = 0
 
 def create_game():
+
+
+    game_deck = populate_game_deck()
+
     for i in range(number_of_players):
-        player_deck = populate_player_deck()
-        player_hand = populate_player_hand()
+        player_deck = populate_player_deck(game_deck)
+        player_hand = populate_player_hand(game_deck)
         player = Player(i,player_hand, player_deck)
         players.append(player)
+
+    game_state = GameState(players, game_deck)
+
 
     return
 
 def populate_game_deck():
-
+    temp_deck = []
     for i in range(12):
         for j in range(12):
-            card = Card.Card(CARD_VALUES[j])
-            game_deck.append(card)
+            card = Card(CARD_VALUES[j])
+            temp_deck.append(card)
 
     for i in range(18):
-        game_deck.append(Card.Card('SKIPBO'))
+        temp_deck.append(Card('SKIPBO'))
 
-    random.shuffle(game_deck)
+    random.shuffle(temp_deck)
 
-    return
 
-def populate_player_deck():
+    return temp_deck
+
+def populate_player_deck(game_deck):
 
     player_deck = []
     for i in range(PLAYER_DECK_SIZE):
@@ -62,7 +74,7 @@ def populate_player_deck():
 
     return player_deck
 
-def populate_player_hand():
+def populate_player_hand(game_deck):
     player_hand = []
 
     for i in range(PLAYER_HAND_SIZE):
@@ -73,15 +85,56 @@ def populate_player_hand():
 
     return player_hand
 
-def build():
+def build(player):
+
+    input_card = input()
+    input_pile = input()
+
+    chosen_card = player.player_hand[input_card-1]
+    chosen_pile = game_state.build_piles[input_pile-1]
+
+
     return
 
-def discard_to_pile():
+def discard_to_pile(player):
+    input_card = input()
+    input_pile = input()
+    
     return
 
 def draw():
+
     return
 
-def change_player_turn():
+def change_player_turn(player_turn):
+
+    if player_turn > number_of_players + 1:
+        player_turn = 0
+    else:
+        player_turn + 1
     return
+
+def player_turn(player_id):
+    player = game_state.get_player(player_id)
+
+    action = input("What do you want to do?")
+    if action == 1:
+        build(player_id)
+    if action == 2:
+        discard_to_pile(player_id)
+
+    return
+
+def check_if_build_permitted(chosen_card, chosen_pile):
+
+    value = CARD_VALUES.get(chosen_card.card_value)
+    chosen_pile_value = CARD_VALUES.get(chosen_pile[-1].card_value)
+    if value == chosen_pile_value + 1:
+
+        return True
+
+    if chosen_card.card_value == 'SKIPBO':
+        chosen_card.temp_card_value = CARD_VALUES().index(chosen_pile[-1] + 1)
+
+
 
