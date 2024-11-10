@@ -1,5 +1,6 @@
 import unittest
 from itertools import count
+from unittest import removeResult
 
 from Classes.Game import *
 
@@ -72,3 +73,24 @@ class TestGameFunctions(unittest.TestCase):
         player_y_hand = populate_player_hand(game_deck)
 
         self.assertEqual(len(game_deck), expected_num_cards_in_game_deck)
+
+    def test_check_if_build_is_permitted_true(self):
+
+        card = Card(2)
+        card_one = Card(1)
+        pile = [card_one]
+
+        print(pile)
+
+        result = check_if_build_permitted(card, pile)
+
+        self.assertEqual(result, True)
+
+    def test_check_if_build_is_permitted_false(self):
+        card = Card(3)
+        card_one = Card(1)
+        pile = [card_one]
+
+        result = check_if_build_permitted(card, pile)
+
+        self.assertEqual(result, False)

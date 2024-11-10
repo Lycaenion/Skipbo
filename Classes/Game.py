@@ -85,14 +85,15 @@ def populate_player_hand(game_deck):
 
     return player_hand
 
-def build(player):
+def build_from_hand(player):
 
-    input_card = input()
-    input_pile = input()
+    input_card = int(input())
+    input_pile = int(input())
 
     chosen_card = player.player_hand[input_card-1]
     chosen_pile = game_state.build_piles[input_pile-1]
 
+    check_if_build_permitted(chosen_card, chosen_pile)
 
     return
 
@@ -119,22 +120,33 @@ def player_turn(player_id):
 
     action = input("What do you want to do?")
     if action == 1:
-        build(player_id)
+        build_from_hand(player_id)
     if action == 2:
+        build_from_discard_pile(player_id)
+    if action == 3:
         discard_to_pile(player_id)
 
     return
 
 def check_if_build_permitted(chosen_card, chosen_pile):
 
-    value = CARD_VALUES.get(chosen_card.card_value)
-    chosen_pile_value = CARD_VALUES.get(chosen_pile[-1].card_value)
-    if value == chosen_pile_value + 1:
+    value = int(chosen_card.card_value)
+
+    chosen_pile_value = int(chosen_pile[-1].card_value)
+
+
+    if chosen_card.card_value == 'SKIPBO':
+
+        chosen_card.temp_card_value = CARD_VALUES[chosen_pile[-1] + 1]
 
         return True
 
-    if chosen_card.card_value == 'SKIPBO':
-        chosen_card.temp_card_value = CARD_VALUES().index(chosen_pile[-1] + 1)
+    if value == chosen_pile_value + 1:
+
+        return True
+    else:
+        return False
 
 
-
+def build_from_discard_pile(player_id):
+    return
