@@ -130,16 +130,14 @@ def player_turn(player_id):
 
 def check_if_build_permitted(chosen_card, chosen_pile):
 
-    value = int(chosen_card.card_value)
-
-    chosen_pile_value = int(chosen_pile[-1].card_value)
-
-
     if chosen_card.card_value == 'SKIPBO':
 
-        chosen_card.temp_card_value = CARD_VALUES[chosen_pile[-1] + 1]
+        chosen_card.temp_card_value = CARD_VALUES[int(chosen_pile[-1].card_value)]
 
         return True
+
+    value = int(chosen_card.card_value)
+    chosen_pile_value = int(chosen_pile[-1].card_value)
 
     if value == chosen_pile_value + 1:
 

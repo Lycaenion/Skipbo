@@ -94,3 +94,14 @@ class TestGameFunctions(unittest.TestCase):
         result = check_if_build_permitted(card, pile)
 
         self.assertEqual(result, False)
+
+    def test_check_if_build_is_permitted_skipbo_card(self):
+        card = Card('SKIPBO')
+        card_one = Card(2)
+        pile = [card_one]
+
+        result = check_if_build_permitted(card, pile)
+
+        self.assertEqual(result, True)
+
+        print(card.temp_card_value)
