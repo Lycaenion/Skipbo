@@ -1,11 +1,22 @@
 import unittest
 from itertools import count
 from unittest import removeResult
-
+from Classes.Player import *
 from Classes.Game import *
+from Classes.Card import *
 
 class TestGameFunctions(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        print('Runnning before everything')
+    def setUp(self):
+        print('running setup')
+        player_hand = [Card(1), Card(2), Card(3), Card(4), Card(5)]
+        player_deck = [Card(6), Card(7), Card(8), Card(9), Card(10)]
+        self.player = Player(0, player_hand, player_deck)
 
+    def tearDown(self):
+        print("teardown")
     #function to test population of the game deck
     def test_populate_game_deck(self):
 
@@ -105,3 +116,23 @@ class TestGameFunctions(unittest.TestCase):
         self.assertEqual(result, True)
 
         print(card.temp_card_value)
+
+    def test_discard_to_pile(self):
+
+        discard_to_pile(self.player, 1, 1)
+
+        expected_num_of_cards_player_hand = 4
+        size_player_hand = len(self.player.player_hand)
+
+        expected_num_of_cards_discard_pile = 1
+        size_discard_pile = len(self.player.player_discard_piles[0])
+
+        self.assertEqual(size_player_hand, expected_num_of_cards_player_hand)
+        self.assertEqual(size_discard_pile, expected_num_of_cards_discard_pile)
+
+    @classmethod
+    def tearDownClass(cls):
+        print('tearing down everything')
+
+if __name__ == '__main__':
+    unittest.main()

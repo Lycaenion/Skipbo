@@ -29,6 +29,7 @@ PLAYER_HAND_SIZE = 5
 players = []
 game_state = None
 game_deck = []
+shuffle_pile = []
 number_of_players = 2
 player_turn = 0
 
@@ -97,13 +98,38 @@ def build_from_hand(player):
 
     return
 
-def discard_to_pile(player):
-    input_card = input()
-    input_pile = input()
+def discard_to_pile(player, input_a, input_b ):
+    #input_card = int(input())
+    #input_pile = int(input())
+
+    chosen_card = player.player_hand[input_a-1]
+    chosen_pile = player.player_discard_piles[input_b-1]
+
+    player.player_hand.pop(input_a-1)
+
+    chosen_pile.append(chosen_card)
     
     return
 
-def draw():
+def draw(player):
+    STANDARD_HAND_SIZE = 5
+    player_hand = player.get_player_hand()
+    num_of_cards_in_hand = len(player_hand)
+
+    if len(game_deck) < 5:
+        shuffle_deck()
+
+    for i in range(STANDARD_HAND_SIZE-num_of_cards_in_hand):
+        card = game_deck[-1]
+        game_deck[-1].pop()
+        player_hand.append(card)
+    return
+
+def shuffle_deck():
+
+    random.shuffle(shuffle_pile)
+    game_deck.extend(shuffle_pile)
+    shuffle_pile.clear()
 
     return
 
@@ -126,6 +152,8 @@ def player_turn(player_id):
     if action == 3:
         discard_to_pile(player_id)
 
+    draw(player)
+
     return
 
 def check_if_build_permitted(chosen_card, chosen_pile):
@@ -146,5 +174,19 @@ def check_if_build_permitted(chosen_card, chosen_pile):
         return False
 
 
-def build_from_discard_pile(player_id):
+def build_from_discard_pile(player, discard_pile_num, build_pile_num):
+
+    discard_pile = player.player_discard_piles[discard_pile_num-1]
+    chosen_card = discard_pile[-1]
+
+    result = check_if_build_permitted(chosen_card, build_pile_num)
+
+    build_piles = game_state.get_build_piles()
+
+    if result is True:
+        discard_pile.pop()
+        build_piles[build_pile_num].append(chosen_card)
+        game_state.set_build_piles(build_piles)
+    else:
+        print('error')
     return
