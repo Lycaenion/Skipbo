@@ -11,9 +11,19 @@ class TestGameFunctions(unittest.TestCase):
         print('Runnning before everything')
     def setUp(self):
         print('running setup')
-        player_hand = [Card(1), Card(2), Card(3), Card(4), Card(5)]
-        player_deck = [Card(6), Card(7), Card(8), Card(9), Card(10)]
-        self.player = Player(0, player_hand, player_deck)
+        player_a_hand = [Card(1), Card(2), Card(3), Card(4), Card(5)]
+        player_a_deck = [Card(6), Card(7), Card(8), Card(9), Card(10)]
+        player_b_hand = [Card(6), Card(7), Card(8), Card(9), Card(10)]
+        player_b_deck = [Card(1), Card(2), Card(3), Card(4), Card(5)]
+        self.player_a = Player(0, player_a_hand, player_a_deck)
+        self.player_b = Player(1, player_b_hand, player_b_deck)
+
+        self.game_deck = [Card(1), Card(2), Card(3), Card(4), Card(5), Card(6), Card(7), Card(8), Card(9), Card(10) ]
+
+        self.players = [self.player_a, self.player_b]
+
+        self.game_state = GameState(self.players, self.game_deck)
+
 
     def tearDown(self):
         print("teardown")
@@ -119,16 +129,27 @@ class TestGameFunctions(unittest.TestCase):
 
     def test_discard_to_pile(self):
 
-        discard_to_pile(self.player, 1, 1)
+        discard_to_pile(self.player_a, 1, 1)
 
         expected_num_of_cards_player_hand = 4
-        size_player_hand = len(self.player.player_hand)
+        size_player_hand = len(self.player_a.player_hand)
 
         expected_num_of_cards_discard_pile = 1
-        size_discard_pile = len(self.player.player_discard_piles[0])
+        size_discard_pile = len(self.player_a.player_discard_piles[0])
 
         self.assertEqual(size_player_hand, expected_num_of_cards_player_hand)
         self.assertEqual(size_discard_pile, expected_num_of_cards_discard_pile)
+
+    def test_build_from_player_hand(self):
+
+        build_from_hand(self.player_a, 1 , 1, self.game_state)
+
+        expected_num_cards_hand = 4
+
+        size_player_hand = len(self.player_a.player_hand)
+
+        self.assertEqual(size_player_hand, expected_num_cards_hand)
+
 
     @classmethod
     def tearDownClass(cls):

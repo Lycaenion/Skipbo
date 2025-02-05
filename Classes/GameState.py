@@ -5,7 +5,7 @@ class GameState:
     def __init__(self, players, game_deck):
         self.players = players
         self.game_deck = game_deck
-        self.build_piles = [[]*4]
+        self.build_piles = [[],[],[],[]]
 
     def get_game_state(self):
 

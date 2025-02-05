@@ -2,10 +2,10 @@
 """Game will create players with decks, game deck and pass it along to the game state."""
 """Actions available are: Build, discard and draw. Build is available from both player hand and player discard piles. When player runs out of cards on hand, 5 new ones will be given and the player continues."""
 """The game will first be adapted for 2-3 players. Later players 4-6 will be added."""
-from Classes.Player import Player
-from Classes.Card import Card
+from Classes.Player import *
+from Classes.Card import *
 import random
-from Classes.GameState import GameState
+from Classes.GameState import *
 
 CARD_VALUES = [
     '01',
@@ -86,16 +86,21 @@ def populate_player_hand(game_deck):
 
     return player_hand
 
-def build_from_hand(player):
+def build_from_hand(player, a, b, game_state):
 
-    input_card = int(input())
-    input_pile = int(input())
+    input_card = a
+    input_pile = b
 
     chosen_card = player.player_hand[input_card-1]
     chosen_pile = game_state.build_piles[input_pile-1]
 
-    check_if_build_permitted(chosen_card, chosen_pile)
+    result = check_if_build_permitted(chosen_card, chosen_pile)
 
+    if result is True:
+        player.player_hand.pop(input_card-1)
+        chosen_pile.append(chosen_card)
+    else:
+        print('error')
     return
 
 def discard_to_pile(player, input_a, input_b ):
@@ -159,20 +164,24 @@ def player_turn(player_id):
 def check_if_build_permitted(chosen_card, chosen_pile):
 
     if chosen_card.card_value == 'SKIPBO':
-
         chosen_card.temp_card_value = CARD_VALUES[int(chosen_pile[-1].card_value)]
 
         return True
 
     value = int(chosen_card.card_value)
-    chosen_pile_value = int(chosen_pile[-1].card_value)
 
-    if value == chosen_pile_value + 1:
-
+    if len(chosen_pile) == 0 and value == 1:
         return True
     else:
-        return False
+        chosen_pile_value = int(chosen_pile[-1].card_value)
 
+        if value == chosen_pile_value + 1:
+
+            return True
+        else:
+
+
+            return False
 
 def build_from_discard_pile(player, discard_pile_num, build_pile_num):
 
