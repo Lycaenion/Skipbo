@@ -44,7 +44,7 @@ def create_game():
         player = Player(i,player_hand, player_deck)
         players.append(player)
 
-    game_state = GameState(players, game_deck)
+    #game_state = GameState(players, game_deck)
 
 
     return
@@ -86,18 +86,17 @@ def populate_player_hand(game_deck):
 
     return player_hand
 
-def build_from_hand(player, a, b, game_state):
+def build_from_hand(player, card_index, pile_index , game_state):
 
-    input_card = a
-    input_pile = b
+    chosen_pile_index = pile_index
+    chosen_card_index = card_index
 
-    chosen_card = player.player_hand[input_card-1]
-    chosen_pile = game_state.build_piles[input_pile-1]
-
-    result = check_if_build_permitted(chosen_card, chosen_pile)
+    result = check_if_build_permitted(player, chosen_card_index, chosen_pile_index, game_state)
+    chosen_pile = game_state.build_piles[chosen_pile_index-1]
+    chosen_card = player.player_hand[chosen_card_index]
 
     if result is True:
-        player.player_hand.pop(input_card-1)
+        player.player_hand.pop(chosen_card_index-1)
         chosen_pile.append(chosen_card)
     else:
         print('error')
@@ -161,34 +160,39 @@ def player_turn(player_id):
 
     return
 
-def check_if_build_permitted(chosen_card, chosen_pile):
+def check_if_build_permitted(player, chosen_card_index, chosen_pile_index, game_state):
+
+    chosen_pile = game_state.build_piles[chosen_pile_index - 1]
+
+    chosen_card = player.player_hand[chosen_card_index-1]
 
     if chosen_card.card_value == 'SKIPBO':
-        chosen_card.temp_card_value = CARD_VALUES[int(chosen_pile[-1].card_value)]
 
         return True
 
-    value = int(chosen_card.card_value)
+    value = (int(chosen_card.card_value))
 
-    if len(chosen_pile) == 0 and value == 1:
-        return True
-    else:
-        chosen_pile_value = int(chosen_pile[-1].card_value)
+    if len(chosen_pile) == 0:
 
-        if value == chosen_pile_value + 1:
-
+        if value == 1:
             return True
-        else:
-
-
+        if value != 1:
             return False
+        else:
+            chosen_pile_value = int(chosen_pile[-1].card_value)
+            if value == chosen_pile_value + 1:
 
-def build_from_discard_pile(player, discard_pile_num, build_pile_num):
+                return True
+            else:
+
+                return False
+
+def build_from_discard_pile(player, discard_pile_num, build_pile_num, game_state):
 
     discard_pile = player.player_discard_piles[discard_pile_num-1]
     chosen_card = discard_pile[-1]
 
-    result = check_if_build_permitted(chosen_card, build_pile_num)
+    result = check_if_build_permitted(chosen_card, build_pile_num, game_state)
 
     build_piles = game_state.get_build_piles()
 

@@ -11,14 +11,14 @@ class TestGameFunctions(unittest.TestCase):
         print('Runnning before everything')
     def setUp(self):
         print('running setup')
-        player_a_hand = [Card(1), Card(2), Card(3), Card(4), Card(5)]
-        player_a_deck = [Card(6), Card(7), Card(8), Card(9), Card(10)]
-        player_b_hand = [Card(6), Card(7), Card(8), Card(9), Card(10)]
-        player_b_deck = [Card(1), Card(2), Card(3), Card(4), Card(5)]
+        player_a_hand = [Card('01'), Card('02'), Card('03'), Card('04'), Card('05')]
+        player_a_deck = [Card('06'), Card('07'), Card('08'), Card('09'), Card('10')]
+        player_b_hand = [Card('06'), Card('07'), Card('08'), Card('09'), Card('10')]
+        player_b_deck = [Card('01'), Card('02'), Card('03'), Card('04'), Card('05')]
         self.player_a = Player(0, player_a_hand, player_a_deck)
         self.player_b = Player(1, player_b_hand, player_b_deck)
 
-        self.game_deck = [Card(1), Card(2), Card(3), Card(4), Card(5), Card(6), Card(7), Card(8), Card(9), Card(10) ]
+        self.game_deck = [Card('01'), Card('02'), Card('03'), Card('04'), Card('05'), Card('06'), Card('07'), Card('08'), Card('09'), Card('10') ]
 
         self.players = [self.player_a, self.player_b]
 
@@ -97,35 +97,32 @@ class TestGameFunctions(unittest.TestCase):
 
     def test_check_if_build_is_permitted_true(self):
 
-        card = Card(2)
-        card_one = Card(1)
-        pile = [card_one]
+        card_index = 1
+        pile_index = 1
 
-        print(pile)
 
-        result = check_if_build_permitted(card, pile)
+        result = check_if_build_permitted(self.player_a, card_index, pile_index, self.game_state)
 
         self.assertEqual(result, True)
 
     def test_check_if_build_is_permitted_false(self):
-        card = Card(3)
-        card_one = Card(1)
-        pile = [card_one]
+        card_index = 3
+        pile_index = 1
 
-        result = check_if_build_permitted(card, pile)
+        result = check_if_build_permitted(self.player_a, card_index, pile_index, self.game_state)
 
         self.assertEqual(result, False)
 
     def test_check_if_build_is_permitted_skipbo_card(self):
-        card = Card('SKIPBO')
-        card_one = Card(2)
-        pile = [card_one]
 
-        result = check_if_build_permitted(card, pile)
+        self.player_a.player_hand = [Card('SKIPBO'), Card('02'), Card('03'), Card('04'), Card('05')]
+
+        card_index = 1
+        pile_index = 0
+
+        result = check_if_build_permitted(self.player_a, card_index, pile_index, self.game_state)
 
         self.assertEqual(result, True)
-
-        print(card.temp_card_value)
 
     def test_discard_to_pile(self):
 
@@ -141,6 +138,8 @@ class TestGameFunctions(unittest.TestCase):
         self.assertEqual(size_discard_pile, expected_num_of_cards_discard_pile)
 
     def test_build_from_player_hand(self):
+
+        self.game_state.build_piles = [[Card('SKIPBO')],[Card(1)],[Card(1)],[Card(1)]]
 
         build_from_hand(self.player_a, 1 , 1, self.game_state)
 
