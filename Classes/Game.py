@@ -92,15 +92,20 @@ def build_from_hand(player, card_index, pile_index , game_state):
     chosen_card_index = card_index
 
     result = check_if_build_permitted(player, chosen_card_index, chosen_pile_index, game_state)
+
     chosen_pile = game_state.build_piles[chosen_pile_index-1]
     chosen_card = player.player_hand[chosen_card_index]
 
-    if result is True:
+    if result:
+
         player.player_hand.pop(chosen_card_index-1)
+        print(len(player.player_hand))
         chosen_pile.append(chosen_card)
-    else:
+
+        return
+    if result is False:
         print('error')
-    return
+        return
 
 def discard_to_pile(player, input_a, input_b ):
     #input_card = int(input())
@@ -162,6 +167,8 @@ def player_turn(player_id):
 
 def check_if_build_permitted(player, chosen_card_index, chosen_pile_index, game_state):
 
+    print('I am here')
+
     chosen_pile = game_state.build_piles[chosen_pile_index - 1]
 
     chosen_card = player.player_hand[chosen_card_index-1]
@@ -170,22 +177,21 @@ def check_if_build_permitted(player, chosen_card_index, chosen_pile_index, game_
 
         return True
 
-    value = (int(chosen_card.card_value))
+    value = (int(chosen_card.card_value)) #2
 
     if len(chosen_pile) == 0:
 
         if value == 1:
             return True
-        if value != 1:
-            return False
         else:
-            chosen_pile_value = int(chosen_pile[-1].card_value)
-            if value == chosen_pile_value + 1:
+            return False
+    else:
+        chosen_pile_value = int(chosen_pile[-1].card_value)
 
-                return True
-            else:
-
-                return False
+        if value == chosen_pile_value + 1:
+            return True
+        else:
+            return False
 
 def build_from_discard_pile(player, discard_pile_num, build_pile_num, game_state):
 
@@ -193,6 +199,7 @@ def build_from_discard_pile(player, discard_pile_num, build_pile_num, game_state
     chosen_card = discard_pile[-1]
 
     result = check_if_build_permitted(chosen_card, build_pile_num, game_state)
+
 
     build_piles = game_state.get_build_piles()
 

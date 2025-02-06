@@ -137,9 +137,9 @@ class TestGameFunctions(unittest.TestCase):
         self.assertEqual(size_player_hand, expected_num_of_cards_player_hand)
         self.assertEqual(size_discard_pile, expected_num_of_cards_discard_pile)
 
-    def test_build_from_player_hand(self):
+    def test_build_from_player_hand_empty_build_pile(self):
 
-        self.game_state.build_piles = [[Card('SKIPBO')],[Card(1)],[Card(1)],[Card(1)]]
+        self.game_state.build_piles = [[],[Card('01')],[Card('01')],[Card('01')]]
 
         build_from_hand(self.player_a, 1 , 1, self.game_state)
 
@@ -148,6 +148,19 @@ class TestGameFunctions(unittest.TestCase):
         size_player_hand = len(self.player_a.player_hand)
 
         self.assertEqual(size_player_hand, expected_num_cards_hand)
+
+    def test_build_from_player_hand_non_empty_build_pile(self):
+
+        self.game_state.build_piles = [[], [Card('01')], [Card('01')], [Card('01')]]
+
+        build_from_hand(self.player_a, 2, 2, self.game_state)
+
+        print(len(self.game_state.build_piles[1]))
+
+        expected_num_cards_hand = 4
+        size_player_hand = len(self.player_a.player_hand)
+
+        self.assertEqual(4, size_player_hand)
 
 
     @classmethod
