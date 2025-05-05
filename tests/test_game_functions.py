@@ -103,7 +103,7 @@ class TestGameFunctions(unittest.TestCase):
         pile_index = 1
 
 
-        result = check_if_build_permitted(self.player_a, self.player_a.player_hand[card_index], pile_index, self.game_state)
+        result = check_if_build_permitted(self.player_a.player_hand[card_index], pile_index, self.game_state)
 
         self.assertEqual(result, True)
 
@@ -111,7 +111,7 @@ class TestGameFunctions(unittest.TestCase):
         card_index = 3
         pile_index = 1
 
-        result = check_if_build_permitted(self.player_a, self.player_a.player_hand[card_index], pile_index, self.game_state)
+        result = check_if_build_permitted(self.player_a.player_hand[card_index], pile_index, self.game_state)
 
         self.assertEqual(result, False)
 
@@ -122,7 +122,7 @@ class TestGameFunctions(unittest.TestCase):
         card_index = 0
         pile_index = 0
 
-        result = check_if_build_permitted(self.player_a, self.player_a.player_hand[card_index], pile_index, self.game_state)
+        result = check_if_build_permitted(self.player_a.player_hand[card_index], pile_index, self.game_state)
 
         self.assertEqual(result, True)
 
@@ -171,6 +171,17 @@ class TestGameFunctions(unittest.TestCase):
         actual_pile_size = (len(self.game_state.build_piles[0]))
 
         self.assertEqual(expected_pile_size, actual_pile_size)
+
+    def test_build_from_stock_pile(self):
+        self.player_a.player_stock_pile = [Card('01'), Card('02'), Card('03'), Card('04')]
+        self.game_state.build_piles = [[Card('01'), Card('02'), Card('03')], [Card('01'), Card('02'), Card('03'), Card('04')], [Card('01')], [Card('01')]]
+
+        build_from_player_stock_pile(self.player_a, 1, self.game_state)
+
+        expected_player_stock_pile_size = 3
+        actual_player_stock_pile_size = (len(self.player_a.player_stock_pile))
+
+        self.assertEqual(expected_player_stock_pile_size, actual_player_stock_pile_size)
 
 
 
