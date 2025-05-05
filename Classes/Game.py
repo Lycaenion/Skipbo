@@ -134,6 +134,18 @@ def draw(player):
         player_hand.append(card)
     return
 
+def empty_build_pile(build_pile_number, game_state):
+
+    pile = game_state.get_build_pile(build_pile_number)
+
+    for card in pile:
+        shuffle_pile.append(card)
+
+    pile.clear()
+    game_state.set_build_pile(build_pile_number, pile)
+
+
+
 def shuffle_deck():
 
     random.shuffle(shuffle_pile)

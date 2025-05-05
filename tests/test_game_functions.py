@@ -24,10 +24,12 @@ class TestGameFunctions(unittest.TestCase):
 
         self.game_state = GameState(self.players, self.game_deck)
 
+        shuffle_pile = []
+
 
     def tearDown(self):
         print("teardown")
-    #function to test population of the game deck
+    #function to test the population of the game deck
     def test_populate_game_deck(self):
 
         expected_game_deck_size = 162
@@ -160,7 +162,20 @@ class TestGameFunctions(unittest.TestCase):
         expected_num_cards_hand = 4
         size_player_hand = len(self.player_a.player_hand)
 
-        self.assertEqual(4, size_player_hand)
+        self.assertEqual(expected_num_cards_hand, size_player_hand)
+
+    def test_empty_build_pile(self):
+        self.game_state.build_piles = [[Card('01'), Card('02'), Card('03'), Card('04'), Card('05')], [Card('01'), Card('02'), Card('03'), Card('04')], [Card('01')], [Card('01')]]
+
+        print(len(self.game_state.build_piles[0]))
+
+        empty_build_pile(0, self.game_state)
+
+        expected_pile_size = 0
+        actual_pile_size = (len(self.game_state.build_piles[0]))
+
+        self.assertEqual(expected_pile_size, actual_pile_size)
+
 
 
     @classmethod

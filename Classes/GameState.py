@@ -24,9 +24,11 @@ class GameState:
             if self.players[i].player_id == player_id:
                 return self.players[i]
 
-    # def get_build_pile(self, num):
-    #     return self.build_piles[num]
+    def get_build_pile(self, num):
+         return self.build_piles[num]
     #
+    def set_build_pile(self, num, pile):
+        self.build_piles[num] = pile
     # def get_build_piles(self):
     #     return self.build_piles
     #
