@@ -22,7 +22,7 @@ CARD_VALUES = [
     '12'
 ]
 
-PLAYER_DECK_SIZE = 30
+PLAYER_STOCK_PILE_SIZE = 30
 PLAYER_HAND_SIZE = 5
 
 
@@ -39,9 +39,9 @@ def create_game():
     game_deck = populate_game_deck()
 
     for i in range(number_of_players):
-        player_deck = populate_player_deck(game_deck)
+        player_stock_pile = populate_player_stock_pile(game_deck)
         player_hand = populate_player_hand(game_deck)
-        player = Player(i,player_hand, player_deck)
+        player = Player(i,player_hand, player_stock_pile)
         players.append(player)
 
     #game_state = GameState(players, game_deck)
@@ -64,13 +64,13 @@ def populate_game_deck():
 
     return temp_deck
 
-def populate_player_deck(game_deck):
+def populate_player_stock_pile(game_deck):
 
     player_deck = []
-    for i in range(PLAYER_DECK_SIZE):
+    for i in range(PLAYER_STOCK_PILE_SIZE):
         player_deck.append(game_deck[i])
 
-    for i in range(PLAYER_DECK_SIZE):
+    for i in range(PLAYER_STOCK_PILE_SIZE):
         game_deck.pop(i)
 
     return player_deck
@@ -86,26 +86,59 @@ def populate_player_hand(game_deck):
 
     return player_hand
 
+
 def build_from_hand(player, card_index, pile_index , game_state):
 
     chosen_pile_index = pile_index
-    chosen_card_index = card_index
+    chosen_card = player.player_hand[card_index-1]
 
-    result = check_if_build_permitted(player, chosen_card_index, chosen_pile_index, game_state)
+    print('here')
+
+    result = check_if_build_permitted(player, chosen_card, chosen_pile_index, game_state)
 
     chosen_pile = game_state.build_piles[chosen_pile_index-1]
-    chosen_card = player.player_hand[chosen_card_index]
+
 
     if result:
 
-        player.player_hand.pop(chosen_card_index-1)
-        print(len(player.player_hand))
+        player.player_hand.remove(chosen_card)
         chosen_pile.append(chosen_card)
+
+        if len(chosen_pile) == 12:
+            empty_build_pile(pile_index, game_state)
 
         return
     if result is False:
         print('error')
         return
+
+def build_from_player_stock_pile(player, build_pile_num, game_state):
+
+    card = player.player_stock_pile[-1]
+
+    result = check_if_build_permitted()
+
+    return
+
+def build_from_discard_pile(player, discard_pile_num, build_pile_num, game_state):
+
+    discard_pile = player.player_discard_piles[discard_pile_num-1]
+    chosen_card = discard_pile[-1]
+    result = check_if_build_permitted(chosen_card, build_pile_num, game_state)
+
+
+    build_piles = game_state.get_build_piles()
+
+    if result is True:
+        discard_pile.pop()
+        build_piles[build_pile_num].append(chosen_card)
+        game_state.set_build_piles(build_piles)
+
+        if len(game_state.build_piles[build_pile_num]) == 12:
+            empty_build_pile(build_pile_num, game_state)
+    else:
+        print('error')
+    return
 
 def discard_to_pile(player, input_a, input_b ):
     #input_card = int(input())
@@ -144,8 +177,6 @@ def empty_build_pile(build_pile_number, game_state):
     pile.clear()
     game_state.set_build_pile(build_pile_number, pile)
 
-
-
 def shuffle_deck():
 
     random.shuffle(shuffle_pile)
@@ -162,28 +193,27 @@ def change_player_turn(player_turn):
         player_turn + 1
     return
 
-def player_turn(player_id):
-    player = game_state.get_player(player_id)
+# def player_turn(player_id):
+#     player = game_state.get_player(player_id)
+#
+#     action = input("What do you want to do?")
+#     if action == 1:
+#         build_from_hand(player_id)
+#     if action == 2:
+#         build_from_discard_pile(player_id)
+#     if action == 3:
+#         discard_to_pile(player_id)
+#
+#     draw(player)
+#
+#     return
 
-    action = input("What do you want to do?")
-    if action == 1:
-        build_from_hand(player_id)
-    if action == 2:
-        build_from_discard_pile(player_id)
-    if action == 3:
-        discard_to_pile(player_id)
-
-    draw(player)
-
-    return
-
-def check_if_build_permitted(player, chosen_card_index, chosen_pile_index, game_state):
-
-    print('I am here')
-
+def check_if_build_permitted(player, chosen_card, chosen_pile_index, game_state):
+    print('start check')
     chosen_pile = game_state.build_piles[chosen_pile_index - 1]
+    chosen_card
 
-    chosen_card = player.player_hand[chosen_card_index-1]
+    print(chosen_card.card_value)
 
     if chosen_card.card_value == 'SKIPBO':
 
@@ -205,20 +235,3 @@ def check_if_build_permitted(player, chosen_card_index, chosen_pile_index, game_
         else:
             return False
 
-def build_from_discard_pile(player, discard_pile_num, build_pile_num, game_state):
-
-    discard_pile = player.player_discard_piles[discard_pile_num-1]
-    chosen_card = discard_pile[-1]
-
-    result = check_if_build_permitted(chosen_card, build_pile_num, game_state)
-
-
-    build_piles = game_state.get_build_piles()
-
-    if result is True:
-        discard_pile.pop()
-        build_piles[build_pile_num].append(chosen_card)
-        game_state.set_build_piles(build_piles)
-    else:
-        print('error')
-    return
